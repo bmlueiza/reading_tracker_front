@@ -1,0 +1,77 @@
+:root{
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --color_background: #eee9dd;  
+    --color_primary_text: #1e1c43 ;  
+    --color_important_text: #652028 ;  
+    --color_link: #4C8DB7 ; 
+    --color_link_hover: #25537A; 
+    --color_card_background: #F2D6D0 ;  
+    --color_secondary_text: #316793 ;  
+    --color_button: #316793 ;  
+    --color_border: #652028;  
+    --color_header: #652028 ; 
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+  
+html,
+body {
+    background-color: var(--color_background);
+}
+  
+body {
+    place-items: center;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+h2{
+    margin-bottom: 20px;
+}
+
+.divider {
+    border-top: 2px solid var(--color_primary_text);
+    margin: 10px 0;
+}
+
+.text_center{
+    display: flex;
+    justify-content: center;
+}
+/* Inputs */
+input {
+    width: 100%;
+    padding: 20px 0 2px 12px; 
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+  
+input:focus {
+    border-color: var(--color_link_hover);
+}
+
+label {
+    position: absolute;
+    left: 12px;
+    top: 16px;  
+    font-size: 14px;
+    color: #777;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+  
+input:focus + label,
+input:not(:placeholder-shown) + label {
+    top: 0px;
+    font-size: 11px; 
+    color: var(--color_link_hover); 
+}
