@@ -1,7 +1,10 @@
 <template>
     <div class="signup_container">
         <div class="signup_form">
-            <h2 class="text_center">Crear cuenta</h2>
+            <div class="signup_header">
+                <h2 class="text_center">ReadingTracker</h2>
+                <p class="text_center">¡Regístrate y comienza a llevar control de tus lecturas!</p>
+            </div>
             <form @submit.prevent="handleSignup">
                 <div class="name_surname">
                     <div class="input_group" :class="{'error': errors.name}">
@@ -72,7 +75,7 @@
                     <label for="confirmPassword">Confirmar contraseña <span class="required">*</span></label>
                     <p v-if="errors.confirmPassword" id="confirmPassword_error" class="error_message" role="alert">{{ errors.confirmPassword }}</p>
                 </div>
-                <p v-if="errorMessage" class="error-message text_center">{{ errorMessage }}</p>
+                <p v-if="errorMessage" class="error_message text_center">{{ errorMessage }}</p>
                 <button type="submit">Registrarse</button>
             </form>
             <hr className="divider" />
@@ -157,24 +160,33 @@ export default{
             return re.test(email);
         },
         //Manejar registro
-        async handleSignup(){
+        async handleSignup() {
             this.validateName();
             this.validateSurname();
             this.validateEmail();
             this.validatePassword();
             this.validateConfirmPassword();
 
-            if (Object.keys(this.errors).length === 0){
-                try{
-                    await apiClient.post("/users", {
+            if (Object.keys(this.errors).length === 0) {
+                try {
+                    const response = await apiClient.post("/auth/register", {
                         name: this.name,
                         surname: this.surname,
                         email: this.email,
                         password: this.password
                     });
+
+                    // Si el registro fue exitoso, muestra mensaje y redirige
+                    alert("Registro exitoso. Ahora puedes iniciar sesión.");
                     this.$router.push("/");
-                } catch (error){
-                    this.errorMessage = "Ocurrió un error al registrarse";
+
+                } catch (error) {
+                    if (error.response && error.response.status === 409) {
+                        // Si el correo ya está registrado
+                        this.errorMessage = "Correo no disponible. Inténtalo con otro.";
+                    } else {
+                        this.errorMessage = "Ocurrió un error al registrarse. Inténtalo nuevamente.";
+                    }
                 }
             }
         }
