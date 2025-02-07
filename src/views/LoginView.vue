@@ -29,6 +29,7 @@
           <label for="password">Contraseña</label>
           <p v-if="errors.password" id="password-error" class="error-message" role="alert">{{ errors.password }}</p>
         </div>
+        <p v-if="errorMessage" class="error-message text_center">{{ errorMessage }}</p>
         <button type="submit">Iniciar sesión</button>
         <hr className="divider" />
         <button type="submit">Registrarse</button>
@@ -39,12 +40,15 @@
 
 
 <script>
+import apiClient from "../api/axios";
+
 export default {
   data() {
     return {
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      errorMessage: ""
     };
   },
   methods: {
@@ -73,11 +77,30 @@ export default {
     handleLogin() {
       this.validateEmail();
       this.validatePassword();
-      // Si no hay errores, procesamos el login
+
       if (Object.keys(this.errors).length === 0) {
-        console.log("Correo:", this.email);
-        console.log("Contraseña:", this.password);
-        // Lógica para enviar los datos al servidor
+        apiClient.post("auth/login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          console.log("Respuesta del servidor:", response.data);
+          
+          // Guardar el token en localStorage
+          localStorage.setItem("token", response.data.token);
+
+          // Redirigir a otra vista después de iniciar sesión
+          this.$router.push("/dashboard"); 
+        })
+        .catch(error => {
+          console.error("Error en el login:", error.response?.data || error.message);
+          
+           // Establecer mensaje de error visible en la UI
+           this.errorMessage = "Credenciales incorrectas o error en el servidor";
+
+          // También podrías limpiar solo la contraseña si quieres
+          this.password = "";
+        });
       }
     }
   }

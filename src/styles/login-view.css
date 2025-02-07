@@ -7,27 +7,27 @@
     margin: 0;
 }
 
-.login-form {
+.login_form {
     max-width: 400px;
     min-width: 320px;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
   
-.input-group {
+.input_group {
     position: relative;
     margin-bottom: 20px;
 }
 
-.error-message {
+.error_message {
     color: red;
     font-size: 12px;
     margin-top: 5px;
 }
   
-.input-group.error input {
+.input_group.error input {
     border-color: red;
 }
   
@@ -49,7 +49,7 @@
   
   /* Responsividad */
   @media (max-width: 480px) {
-    .login-form {
+    .login_form {
       padding: 15px;
       max-width: 90%;
     }
@@ -70,7 +70,7 @@
   }
   
   @media (min-width: 481px) and (max-width: 768px) {
-    .login-form {
+    .login_form {
       padding: 20px;
       max-width: 70%;
     }
@@ -87,7 +87,7 @@
   }
   
   @media (min-width: 769px) {
-    .login-form {
+    .login_form {
       max-width: 400px;
     }
   }
