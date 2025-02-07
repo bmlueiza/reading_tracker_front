@@ -34,6 +34,22 @@ h2{
     margin-bottom: 20px;
 }
 
+button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: var(--color_button);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: var(--color_link_hover);
+  }
+
 .divider {
     border-top: 2px solid var(--color_primary_text);
     margin: 10px 0;
@@ -42,6 +58,10 @@ h2{
 .text_center{
     display: flex;
     justify-content: center;
+}
+
+.no_underline{
+    text-decoration: none;  
 }
 /* Inputs */
 input {
@@ -74,4 +94,34 @@ input:not(:placeholder-shown) + label {
     top: 0px;
     font-size: 11px; 
     color: var(--color_link_hover); 
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+  }
+
+/* Login and Signup */
+.login_form {
+    max-width: 400px;
+    min-width: 320px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+  
+.input_group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.error_message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+  
+.input_group.error input {
+    border-color: red;
 }

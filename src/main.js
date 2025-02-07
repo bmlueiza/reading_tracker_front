@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
-import LoginView from './views/LoginView.vue'
+import App from './App.vue';
 import router from './router'
 import './styles/global.css'
 
-const app = createApp(LoginView)
+const app = createApp(App)
 app.use(router)
 app.mount('#app')

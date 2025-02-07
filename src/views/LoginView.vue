@@ -1,9 +1,9 @@
 <template>
   <div class="login_container">
-    <div class="login-form">
+    <div class="login_form">
       <h2 class="text_center">Reading Tracker</h2>
       <form @submit.prevent="handleLogin">
-        <div class="input-group" :class="{'error': errors.email}">
+        <div class="input_group" :class="{'error': errors.email}">
           <input
             v-model="email"
             id="email"
@@ -14,9 +14,9 @@
             @blur="validateEmail"
           />
           <label for="email">Correo electrónico</label>
-          <p v-if="errors.email" id="email-error" class="error-message" role="alert">{{ errors.email }}</p>
+          <p v-if="errors.email" id="email-error" class="error_message" role="alert">{{ errors.email }}</p>
         </div>
-        <div class="input-group" :class="{'error': errors.password}">
+        <div class="input_group" :class="{'error': errors.password}">
           <input
             v-model="password"
             id="password"
@@ -27,13 +27,15 @@
             @blur="validatePassword"
           />
           <label for="password">Contraseña</label>
-          <p v-if="errors.password" id="password-error" class="error-message" role="alert">{{ errors.password }}</p>
+          <p v-if="errors.password" id="password-error" class="error_message" role="alert">{{ errors.password }}</p>
         </div>
-        <p v-if="errorMessage" class="error-message text_center">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="error_message text_center">{{ errorMessage }}</p>
         <button type="submit">Iniciar sesión</button>
-        <hr className="divider" />
-        <button type="submit">Registrarse</button>
       </form>
+      <hr className="divider" />
+      <p class="text_center router_link">
+        ¿No tienes una cuenta?<router-link to="/signup" class="no_underline"> Registrarse</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -102,6 +104,9 @@ export default {
           this.password = "";
         });
       }
+    },
+    goToSignup() {
+      this.$router.push("/signup");
     }
   }
 };
