@@ -5,6 +5,10 @@
     height: 100vh;
     width: 100%;
     margin: 0;
+    background-image: url(/login-collage.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .router_link{

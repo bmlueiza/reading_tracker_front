@@ -92,7 +92,7 @@ export default {
           localStorage.setItem("token", response.data.token);
 
           // Redirigir a otra vista después de iniciar sesión
-          this.$router.push("/dashboard"); 
+          this.$router.push("/home"); 
         })
         .catch(error => {
           console.error("Error en el login:", error.response?.data || error.message);
