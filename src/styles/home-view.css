@@ -1,0 +1,33 @@
+.home_container {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+  }
+
+  
+  /* Contenedor para To Read y Read */
+  .home_grid {
+    display: flex;
+    justify-content: space-between;
+    width: 90vw;
+    gap: 20px;
+  }
+  
+  /*  Ambos ocupan el mismo espacio y tienen fondo transparente */
+  .home_to_read, .home_read {
+    flex: 1; /* Para que ocupen el mismo tamaño */
+    padding: 5px 20px;
+    background: rgba(255, 255, 255, 0.2); /* Fondo con transparencia */
+    backdrop-filter: blur(10px); /* Desenfoque */
+  }
+  
+  /*  Responsividad: apilar en pantallas pequeñas */
+  @media (max-width: 768px) {
+    .home_grid {
+      flex-direction: column;
+    }
+  }
+  

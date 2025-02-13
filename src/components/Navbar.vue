@@ -6,7 +6,7 @@
           <router-link to="/home">Reading Tracker</router-link>
         </div>
         <router-link to="/home">Inicio</router-link>
-        <router-link to="#">Mis libros</router-link>
+        <router-link to="#">Mi biblioteca</router-link>
       </div>
   
       <div class="nav-der">
@@ -77,7 +77,7 @@
   
   const logout = () => {
     console.log("Cerrando sesión...");
-    router.push('/login');
+    router.push('/');
   };
   </script>
   

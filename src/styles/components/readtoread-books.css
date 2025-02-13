@@ -1,0 +1,29 @@
+.books_list {
+    display: block; /* Hacemos que los libros se muestren en lista */
+  }
+  
+  .book_item {
+    display: flex; /* Alineamos la imagen y el título horizontalmente */
+    align-items: center; /* Alineamos verticalmente */
+    gap: 1rem; /* Espacio entre la imagen y el título */
+    margin-bottom: 1rem; /* Espacio entre cada libro */
+    max-width: 100%; /* Aseguramos que los libros no excedan el ancho */
+  }
+  
+  .book_cover {
+    width: 100px; /* Tamaño fijo para la imagen */
+    height: 150px; /* Altura fija para la imagen */
+    object-fit: cover; /* Mantener la proporción de la imagen */
+  }
+  
+  .book_title {
+    flex-grow: 1; /* El título ocupa el espacio restante */
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1.2;
+    word-wrap: break-word; /* Permite que el título se divida en varias líneas */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Si el título es muy largo, mostrar "..." */
+    max-height: 150px; /* Limitar la altura del título a la altura de la imagen */
+  }
+  
