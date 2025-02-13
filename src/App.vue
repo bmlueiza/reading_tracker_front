@@ -1,7 +1,9 @@
 <template>
-    <div id="app">
+    <div class="app_container">
       <Navbar v-if="!isAuthPage" />
-      <router-view />
+      <main class="main_content">
+        <router-view />
+      </main>
     </div>
 </template>
   
