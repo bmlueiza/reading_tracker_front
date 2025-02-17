@@ -1,5 +1,12 @@
 <template>
     <div class="signup_container">
+        <div class="login_animation">
+            <Vue3Lottie 
+                animationLink="https://lottie.host/d1869b82-081d-430a-ac0f-a51b17628244/GQQjDUyC1m.json" 
+                :loop="true" 
+                :autoplay="true" 
+            />
+        </div>
         <div class="signup_form">
             <div class="signup_header">
                 <h2 class="text_center">ReadingTracker</h2>
@@ -87,9 +94,13 @@
 </template>
 
 <script>
+import {Vue3Lottie} from "vue3-lottie";
 import apiClient from "../api/axios";
 
 export default{
+    components: {
+        Vue3Lottie
+    },
     data(){
         return{
             name: "",

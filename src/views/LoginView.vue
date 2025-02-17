@@ -1,5 +1,13 @@
 <template>
   <div class="login_container">
+    <!-- Animación Lottie -->
+    <div class="login_animation">
+      <Vue3Lottie 
+        animationLink="https://lottie.host/d1869b82-081d-430a-ac0f-a51b17628244/GQQjDUyC1m.json" 
+        :loop="true" 
+        :autoplay="true" 
+      />
+    </div>
     <div class="login_form">
       <h2 class="text_center">Reading Tracker</h2>
       <form @submit.prevent="handleLogin">
@@ -42,9 +50,13 @@
 
 
 <script>
+import {Vue3Lottie} from "vue3-lottie";
 import apiClient from "../api/axios";
 
 export default {
+  components: {
+    Vue3Lottie
+  },
   data() {
     return {
       email: "",
