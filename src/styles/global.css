@@ -38,19 +38,6 @@ body {
     overflow-x: hidden;
 }
 
-.app_container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-.main_content {
-    flex: 1;
-    margin-top: 65px;
-    margin-bottom: 10px;
-    width: 100%;
-  }
-
 h2{
     margin-bottom: 20px;
 }
@@ -134,7 +121,7 @@ input:not(:placeholder-shown) + label {
   
 .input_group {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .error_message {
