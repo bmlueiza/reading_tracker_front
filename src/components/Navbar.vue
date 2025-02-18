@@ -124,8 +124,8 @@ const selectBook = (book) => {
 };
 
 const logout = () => {
-  console.log("Cerrando sesión...");
-  router.push('/');
+  localStorage.removeItem("token");
+  router.push('/'); 
 };
 </script>
 
