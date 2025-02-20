@@ -4,7 +4,7 @@
         <img :src="book.cover" alt="Portada del libro" class="book-cover" />
         <button
           :class="buttonClass"
-          @click="handleButtonClick">
+          @click="showModal = true">
           {{ buttonText }}
         </button>
       </div>
@@ -16,13 +16,31 @@
           <p><strong>ISBN:</strong> {{ book.isbn }}</p>
           <p><strong>Páginas:</strong> {{ book.pageCount }}</p>
           <p><strong>Idioma:</strong> {{ book.language }}</p>
-          <p><strong>Descripción:</strong> {{ book.description }}</p>
+          <p>{{ book.description }}</p>
         </div>
       </div>
     </div>
     <div v-else>
       <p>Cargando detalles del libro...</p>
     </div>
+    <!-- MODAL -->
+  <div v-if="showModal" class="modal-overlay">
+    <div class="modal">
+      <button class="close-btn" @click="showModal = false">✖</button>
+      <h3>Selecciona un estado de lectura</h3>
+      <ul>
+        <li v-for="(label, key) in statusLabels" :key="key">
+          <button
+            :class="{ active: key === readingStatus }"
+            @click="updateReadingStatus(key)"
+            :disabled="key === readingStatus"
+          >
+            {{ label }}
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
   
 <script setup>
@@ -33,6 +51,7 @@
   const route = useRoute();
   const book = ref(null);
   const readingStatus = ref(null);
+  const showModal = ref(false);
 
   const statusLabels = {
     READING: "Leyendo",
@@ -130,6 +149,24 @@
       console.log(`Estado actual: ${readingStatus.value}`);
     }
   };
+
+  // Cambiar estado de lectura
+const updateReadingStatus = async (newStatus) => {
+  if (newStatus === readingStatus.value) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await apiClient.patch(`/readings/update-status`, null, {
+      params: { isbn: book.value.isbn, status: newStatus },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    readingStatus.value = newStatus; // Actualizar la UI
+    showModal.value = false; // Cerrar el modal
+  } catch (error) {
+    console.error("Error al actualizar el estado de lectura:", error);
+  }
+};
   </script>
 
   <style scoped src="../styles/book-view.css"/>
