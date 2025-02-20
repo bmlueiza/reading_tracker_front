@@ -1,58 +1,136 @@
 <template>
-    <main class="book-view">
-      <div v-if="book" class="book-container">
-        <img :src="book.cover" :alt="book.title" class="book-cover-large" :key="book.cover" />
-        <div class="book-details">
-          <button @click="addToLibrary" class="add-btn">Añadir a mi biblioteca</button>
+    <div v-if="book" class="bookview_container">
+      <div class="bookview_leftcolumn">
+        <img :src="book.cover" alt="Portada del libro" class="book-cover" />
+        <button
+          :class="buttonClass"
+          @click="handleButtonClick">
+          {{ buttonText }}
+        </button>
+      </div>
+      <div class="bookview_rightcolumn">
+        <div class="book-info">
           <h1>{{ book.title }}</h1>
-          <p><strong>Autor(es):</strong> {{ book.authors }}</p>
-          <p><strong>Géneros:</strong> {{ book.categories || 'No disponible' }}</p>
-          <p><strong>ISBN:</strong> {{ book.isbn || 'No disponible' }}</p>
-          <p><strong>Páginas:</strong> {{ book.pageCount || 'No disponible' }}</p>
+          <p><strong>{{ book.authors.join(', ') }}</strong></p>
+          <p><strong>Categorías:</strong> {{ book.categories.join(', ') }}</p>
+          <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+          <p><strong>Páginas:</strong> {{ book.pageCount }}</p>
           <p><strong>Idioma:</strong> {{ book.language }}</p>
-          <p class="description" v-html="book.description || 'Sin descripción'"></p>
+          <p><strong>Descripción:</strong> {{ book.description }}</p>
         </div>
       </div>
-      <p v-else>Cargando información del libro...</p>
-    </main>
+    </div>
+    <div v-else>
+      <p>Cargando detalles del libro...</p>
+    </div>
 </template>
   
 <script setup>
-  import { ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { useRoute } from 'vue-router';
+  import apiClient from '../api/axios'; // Ajusta la importación de tu cliente API
   
   const route = useRoute();
   const book = ref(null);
+  const readingStatus = ref(null);
+
+  const statusLabels = {
+    READING: "Leyendo",
+    READ: "Leído",
+    TOREAD: "Quiero leerlo",
+    DROPPED: "Abandonado",
+  };
+
+  const buttonText = computed(() => {
+    return readingStatus.value ? statusLabels[readingStatus.value] : "Quiero leerlo";
+  });
+
+  const buttonClass = computed(() => {
+    return {
+      reading: readingStatus.value === "READING",
+      read: readingStatus.value === "READ",
+      toread: readingStatus.value === "TOREAD",
+      dropped: readingStatus.value === "DROPPED",
+      notAdded: !readingStatus.value, // Si no hay status, significa que no está en la biblioteca
+    };
+  });  
   
-  const fetchBookDetails = async () => {
+  // Obtener detalles del libro cuando la vista se monte
+  onMounted(async () => {
+    const isbn = route.params.isbn; // Obtener el ISBN del libro desde los parámetros de la ruta
+    console.log(isbn);
+    if (!isbn) {
+      console.error("ISBN no encontrado en los parámetros de la ruta.");
+      return;
+    }
+  
     try {
-      const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${route.params.id}`);
-      const data = await response.json();
+      // Primer intento: buscar en la API local
+      const token = localStorage.getItem("token"); // Obtener token de localStorage
   
-      book.value = {
-        title: data.volumeInfo.title,
-        authors: data.volumeInfo.authors?.join(', ') || 'Autor desconocido',
-        categories: data.volumeInfo.categories?.join(', '),
-        isbn: data.volumeInfo.industryIdentifiers?.[0]?.identifier,
-        pageCount: data.volumeInfo.pageCount,
-        language: data.volumeInfo.language.toUpperCase(),
-        description: data.volumeInfo.description,
-        cover: data.volumeInfo.imageLinks?.large || data.volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150x200?text=No+Cover',
-      };
+      const localResponse = await apiClient.get(`/books/`, {
+        params: { isbn },
+        headers: { Authorization: `Bearer ${token}` } // Autorizar la solicitud con el token
+      });
+
+      console.log(localResponse.data);
+  
+      if (localResponse.data && localResponse.data.length > 0) {
+        // Si encontramos el libro en la API local
+        book.value = {
+        title: localResponse.data[0].title,
+        authors: localResponse.data[0].authors || ['Desconocido'],
+        categories: localResponse.data[0].categories || ['Sin categorías'],
+        isbn: localResponse.data[0].isbn,
+        pageCount: localResponse.data[0].pageCount || 'Desconocido',
+        language: localResponse.data[0].language || 'Desconocido',
+        description: localResponse.data[0].description || 'Sin descripción disponible',
+        cover: localResponse.data[0].coverUrl || '/default-cover.jpg'
+        };
+      } else {
+        // Si no se encuentra el libro en la API local, buscar en Google Books
+        const googleResponse = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+        const googleData = await googleResponse.json();
+  
+        if (googleData.items?.length > 0) {
+          const googleBook = googleData.items[0].volumeInfo;
+          book.value = {
+            title: googleBook.title,
+            authors: googleBook.authors || ['Desconocido'],
+            categories: googleBook.categories || ['Sin categorías'],
+            isbn: isbn,
+            pageCount: googleBook.pageCount,
+            language: googleBook.language,
+            description: googleBook.description || 'Sin descripción disponible',
+            cover: googleBook.imageLinks?.thumbnail || '/default-cover.jpg'
+          };
+        } else {
+          console.error("Libro no encontrado en Google Books");
+        }
+      }
+      const statusResponse = await apiClient.get(`/readings/status`, {
+        params: { isbn },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (statusResponse.data === "Sin lectura registrada para este usuario y libro.") {
+        readingStatus.value = null; // Indica que aún no ha sido añadido
+      } else {
+        readingStatus.value = statusResponse.data;
+      }
     } catch (error) {
       console.error("Error al obtener los detalles del libro:", error);
     }
-  };
-  
-  const addToLibrary = () => {
-    alert(`"${book.value.title}" agregado a tu biblioteca.`);
-    // Aquí puedes hacer una petición al backend para guardar el libro en la biblioteca del usuario.
-  };
-  
-  onMounted(fetchBookDetails);
+  });
 
-  // Observar cambios en el ID del libro y volver a cargar los datos
-    watch(() => route.params.id, fetchBookDetails);
-</script>
+  const handleButtonClick = () => {
+    if (!readingStatus.value) {
+      console.log("Abrir modal para añadir a la biblioteca");
+    } else {
+      console.log(`Estado actual: ${readingStatus.value}`);
+    }
+  };
+  </script>
+
+  <style scoped src="../styles/book-view.css"/>
   
-<style scoped src="../styles/book-view.css"></style>  

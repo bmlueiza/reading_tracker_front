@@ -75,12 +75,12 @@ const searchBooks = async () => {
       let localResponse;
       if (isIsbn(query.value)) {
         localResponse = await apiClient.get(`/books/search`, {
-          params: { query: query.value, type: "isbn" },
+          params: { query: query.value },
           headers: { Authorization: `Bearer ${token}` },
         });
       } else {
         localResponse = await apiClient.get(`/books/search`, {
-          params: { query: query.value, type: "title" },
+          params: { query: query.value },
           headers: { Authorization: `Bearer ${token}` },
         });
       }
@@ -88,7 +88,8 @@ const searchBooks = async () => {
       const localBooks = localResponse.data.map(book => ({
         id: book.id,
         title: book.title,
-        cover: book.coverUrl || '/default-cover.jpg'
+        cover: book.coverUrl || '/default-cover.jpg',
+        isbn: book.isbn
       }));
 
       books.value = [...localBooks];
@@ -116,8 +117,8 @@ const searchBooks = async () => {
 };
 
 const selectBook = (book) => {
-  if (router.currentRoute.value.path !== `/book/${book.id}`) {
-    router.push(`/book/${book.id}`);
+  if (router.currentRoute.value.path !== `/book/${book.isbn}`) {
+    router.push(`/book/${book.isbn}`); // Redirige usando ISBN
   }
   query.value = ''; // Limpia la barra de búsqueda
   books.value = []; // Oculta la lista de sugerencias
